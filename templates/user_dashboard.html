@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Người dùng{% endblock %}
+{% block content %}
+<section class="card">
+    <h2>Danh sách trận đấu mở</h2>
+    {% if matches %}
+        <table>
+            <thead>
+                <tr><th>Trận</th><th>Mô tả</th><th>Thời gian</th><th>Trạng thái</th><th>Hành động</th></tr>
+            </thead>
+            <tbody>
+                {% for match in matches %}
+                <tr>
+                    <td>{{ match.title }}</td>
+                    <td>{{ match.description or '-' }}</td>
+                    <td>{{ match.start_time.strftime('%d/%m/%Y %H:%M') if match.start_time else 'Chưa đặt lịch' }}</td>
+                    <td>{{ match.status }}</td>
+                    <td>
+                        {% if match.id in joined_match_ids %}
+                            <span class="badge">Đã tham gia</span>
+                        {% else %}
+                            <form method="post" action="{{ url_for('join_match', match_id=match.id) }}">
+                                <button type="submit">Tham gia</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Hiện chưa có trận đấu khả dụng.</p>
+    {% endif %}
+</section>
+{% endblock %}

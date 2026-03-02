@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Đăng ký{% endblock %}
+{% block content %}
+<section class="card narrow">
+    <h2>Đăng ký tài khoản người dùng</h2>
+    <form method="post">
+        <label>Tên đăng nhập
+            <input type="text" name="username" required>
+        </label>
+        <label>Mật khẩu
+            <input type="password" name="password" required>
+        </label>
+        <button type="submit">Đăng ký</button>
+    </form>
+    <p class="hint">Sau khi đăng ký, quản trị viên sẽ phê duyệt trước khi bạn đăng nhập được.</p>
+</section>
+{% endblock %}
