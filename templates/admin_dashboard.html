@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Quản trị{% endblock %}
+{% block content %}
+<section class="card">
+    <h2>Quản lý tài khoản đăng ký</h2>
+    {% if pending_users %}
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Tên đăng nhập</th><th>Hành động</th></tr>
+            </thead>
+            <tbody>
+                {% for user in pending_users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('approve_user', user_id=user.id) }}">
+                            <button type="submit">Phê duyệt</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Không có tài khoản chờ duyệt.</p>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2>Tạo trận đấu mới</h2>
+    <form method="post" action="{{ url_for('create_match') }}" class="grid-form">
+        <label>Tên trận đấu
+            <input type="text" name="title" required>
+        </label>
+        <label>Mô tả
+            <textarea name="description" rows="3"></textarea>
+        </label>
+        <label>Thời gian bắt đầu
+            <input type="datetime-local" name="start_time">
+        </label>
+        <button type="submit">Tạo trận</button>
+    </form>
+</section>
+
+<section class="card">
+    <h2>Tổ chức trận đấu</h2>
+    {% if matches %}
+        <table>
+            <thead>
+                <tr><th>Trận</th><th>Thời gian</th><th>Trạng thái</th><th>Người tham gia</th><th>Cập nhật</th></tr>
+            </thead>
+            <tbody>
+                {% for match in matches %}
+                <tr>
+                    <td>{{ match.title }}</td>
+                    <td>{{ match.start_time.strftime('%d/%m/%Y %H:%M') if match.start_time else 'Chưa đặt lịch' }}</td>
+                    <td>{{ match.status }}</td>
+                    <td>{{ match.registrations|length }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('update_match_status', match_id=match.id) }}" class="inline">
+                            <select name="status">
+                                {% for s in ['DRAFT', 'OPEN', 'ONGOING', 'FINISHED'] %}
+                                    <option value="{{ s }}" {% if match.status == s %}selected{% endif %}>{{ s }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit">Lưu</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Chưa có trận đấu nào.</p>
+    {% endif %}
+</section>
+{% endblock %}
